@@ -12,7 +12,7 @@ var scatter = function(filepath){
     });
 
     data.then(function(data){
-        console.log(data);
+        //console.log(data);
         
         // x axis (suicides/100k) vs y axis (gdp_capita)
         var margin = {top: 10, right: 30, bottom: 60, left: 80}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
@@ -25,9 +25,17 @@ var scatter = function(filepath){
         svg1.append("g").call(d3.axisLeft(y));
 
         svg1.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.suicides_100k);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 1.5).style("fill", "rgb(0,0,0)");
-        svg1.append("text").attr("class", "x label").attr("text-anchor", "end").attr("x", width - 100).attr("y", height + 40).text("Suicides per 100K Individuals");
-        svg1.append("text").attr("class", "y label").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
+        svg1.append("text").attr("class", "x_label").attr("text-anchor", "end").attr("x", width - 100).attr("y", height + 40).text("Suicides per 100K Individuals");
+        svg1.append("text").attr("class", "y_label").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
 
+        /*x.domain([0, 30])
+        svg.select(".x_label").transition().duration(2000)
+            .attr("opacity", "1")
+            .call(d3.axisBottom(x));
+
+        svg.selectAll("circle").transition().delay(function(d,i){return(i*3)}).duration(2000)
+            .attr("cx", function (d) { return x(d.suicides_100k);})
+            .attr("cy", function (d) { return y(d.gdp_capita); })
 
 
         // x axis (population) vs y axis (gdp_capita)
@@ -43,6 +51,20 @@ var scatter = function(filepath){
         svg2.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.population);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 1.5).style("fill", "rgb(0,0,0)");
         svg2.append("text").attr("class", "x label").attr("text-anchor", "end").attr("x", width - 100).attr("y", height + 60).text("Suicides per 100K Individuals");
         svg2.append("text").attr("class", "y label").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
+
+        x.domain([0, 4000])
+        svg.select(".myXaxis")
+            .transition()
+            .duration(2000)
+            .attr("opacity", "1")
+            .call(d3.axisBottom(x));
+
+        svg.selectAll("circle")
+            .transition()
+            .delay(function(d,i){return(i*3)})
+            .duration(2000)
+            .attr("cx", function (d) { return x(d.GrLivArea); } )
+            .attr("cy", function (d) { return y(d.SalePrice); } )*/
     })
 }
 
@@ -57,29 +79,12 @@ var grouped_bar = function(filepath){
         var margin = {top: 10, right: 30, bottom: 20, left: 50}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
         var svg1 = d3.select("#grouped_bar").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var subgroups = data.columns.slice(2, 4);
-        console.log(subgroups);
-        var groups = d3.map(data, function(d){return(d.group)}).keys()
-        
-        var x = d3.scaleBand().domain(groups).range([0, width]).padding([0.2])
-        svg1.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x).tickSize(0));
+        countries = d3.group(data, i => i.country); 
+        console.log(countries);
+        console.log(countries.get("Canada"));
 
-        var y = d3.scaleLinear().domain([0, 40]).range([ height, 0 ]);
-        svg1.append("g").call(d3.axisLeft(y));
-
-        var xSubgroup = d3.scaleBand().domain(subgroups).range([0, x.bandwidth()]).padding([0.05])
-
-        var color = d3.scaleOrdinal().domain(subgroups).range(['#e41a1c','#377eb8','#4daf4a'])
-
-        svg1.append("g").selectAll("g").data(data).enter().append("g")
-            .attr("transform", function(d) { return "translate(" + x(d.group) + ",0)"; })
-            .selectAll("rect")
-            .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
-            .enter().append("rect")
-            .attr("x", function(d) { return xSubgroup(d.key); })
-            .attr("y", function(d) { return y(d.value); })
-            .attr("width", xSubgroup.bandwidth())
-            .attr("height", function(d) { return height - y(d.value); })
-            .attr("fill", function(d) { return color(d.key); });
+        //rolled = d3.rollup(data, v => d3.sum(v, d => d.suicide_num), d => d.country);
+        rolled = d3.rollup(data, v => v.length, d => d.year);
+        console.log(rolled);
     })    
 }
