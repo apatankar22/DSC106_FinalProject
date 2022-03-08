@@ -1,9 +1,8 @@
 function finalproject(){
     var filepath = "gdp_mod.csv";
     scatter(filepath);
-    grouped_bar(filepath);
+    bar(filepath);
 }
-
 
 var scatter = function(filepath){
     var data = d3.csv(filepath, function(i){
@@ -24,7 +23,7 @@ var scatter = function(filepath){
         svg1.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
         svg1.append("g").call(d3.axisLeft(y));
 
-        svg1.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.suicides_100k);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 1.5).style("fill", "rgb(0,0,0)");
+        svg1.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.suicides_100k);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
         svg1.append("text").attr("class", "x_label").attr("text-anchor", "end").attr("x", width - 100).attr("y", height + 40).text("Suicides per 100K Individuals");
         svg1.append("text").attr("class", "y_label").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
 
@@ -49,7 +48,7 @@ var scatter = function(filepath){
         svg2.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-30)");;
         svg2.append("g").call(d3.axisLeft(y));
 
-        svg2.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.population);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 1.5).style("fill", "rgb(0,0,0)");
+        svg2.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.population);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
         svg2.append("text").attr("class", "x_label").attr("text-anchor", "end").attr("x", width - 100).attr("y", height + 60).text("Population");
         svg2.append("text").attr("class", "y_label").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
         
@@ -66,23 +65,13 @@ var scatter = function(filepath){
     })
 }
 
-var grouped_bar = function(filepath){
-    /*var data = d3.csv(filepath, function(i){
+var bar = function(filepath){
+    var data = d3.csv(filepath, function(i){
         return {"": parseInt(i[""]), country: i.country, year: parseInt(i.year), sex: i.sex, age: i.age, suicide_num: parseInt(i.suicides_no), population: i.population, suicides_100k: parseInt(i.suicides_100k), gdp_yearly: i.gdp_yearly, gdp_capita: i.gdp_capita, gen: i.generation}
     });
-
+    
     data.then(function(data){
-        console.log(data);
-        
-        var margin = {top: 10, right: 30, bottom: 20, left: 50}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
-        var svg1 = d3.select("#grouped_bar").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        countries = d3.group(data, i => i.country); 
-        console.log(countries);
-        console.log(countries.get("Canada"));
-
-        //rolled = d3.rollup(data, v => d3.sum(v, d => d.suicide_num), d => d.country);
-        rolled = d3.rollup(data, v => v.length, d => d.year);
-        console.log(rolled);
-    })*/
+        var margin = {top: 10, right: 30, bottom: 75, left: 80}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
+        var svg1 = d3.select("#bar").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    });
 }
