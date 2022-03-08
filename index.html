@@ -18,17 +18,32 @@
 <div id = "q1">
     </div>
     <!--<h4>Plot:</h4>-->
-    <div id = "scatterplot" class = "center_plot">
+
+    <script>
+        function changeColor(col){
+            d3.selectAll("circle").transition().duration(1000).style("fill", col)
+        }
+    </script>
+
+    <div style = "position: relative; left: 80px; top: 2px;">    
+        <button onclick = "changeColor('rgb(230, 130, 130)')"> Change color to pink</button>
+        <button onclick = "changeColor('rgb(135, 175, 230)')"> Change color to light blue</button>
+        <button onclick = "changeColor('rgb(104, 179, 163)')"> Change color back to original</button>
+    </div>
+
+    <div id = "scatterplot" class = "center_plot"></div>
+
     </div>
 </div>    
 </div>
     
 <div>
-<h3>Question 2:</h3>
+<h3>Hover over the bars to see the number of suicides:</h3>
 <div id = "q2">
     </div>
     <!--<h4>Plot:</h4>-->
-    <div id = "grouped_bar" class = "center_plot">
+    <div id = "bar" class = "center_plot">
+    <br><br>
     </div>
 </div>    
 
@@ -67,7 +82,7 @@
 
     </div>
     <!--<h4>Plot:</h4>-->
-    <div id = "q5_plot" class = "center_plot">
+    <div id = "boxplot" class = "center_plot">
     </div>
 </div>    
 </body>  
