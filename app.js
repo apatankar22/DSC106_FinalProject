@@ -2,7 +2,9 @@ function finalproject(){
     var filepath = "gdp_mod.csv";
     scatter(filepath);
     bar(filepath);
-    //boxplot(filepath);
+    stacked(filepath);
+    stream(filepath);
+    boxplot(filepath);
 }
 
 var scatter = function(filepath){
@@ -70,7 +72,6 @@ var bar = function(filepath){
     var margin = {top: 50, right: 50, bottom: 90, left: 80}, width = 800 - margin.left - margin.right, height = 800 - margin.top - margin.bottom;
 
     var svg1 = d3.select("#bar").append("svg").attr("width", width + margin.right + margin.left).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("style", "background-color: lightblue")
-    
     sol.then(function(data){
         const countries = data.map(d => d.country);
         const deathrate = data.map(d => d.suicides_no);        
@@ -138,6 +139,10 @@ var bar = function(filepath){
         svg1.append("text").attr("class", "y label").attr("text-anchor", "end").attr("x", -300).attr("y", -80).attr("dy", ".75em").attr("transform", "rotate(-90)").text("Number of Suicide from 1985-2016");
     })
 }
+
+var stacked = function(filepath){}
+
+var stream = function(filepath){}
 
 var boxplot = function(filepath){
     var data = d3.csv(filepath, function(i){
