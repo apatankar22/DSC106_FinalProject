@@ -41,8 +41,40 @@ var scatter = function(filepath){
 
 
         
+        // x axis (suicide_num) vs y axis (gdp_capita)
+        var margin = {top: 50, right: 30, bottom: 60, left: 80}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
+        var svg2 = d3.select("#scatterplot").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        
+        var x = d3.scaleLinear().domain([0, 0]).range([0, width]);
+        var y = d3.scaleLinear().domain([0, 65000]).range([height, 0]);
+        
+        svg2.append("g").call(d3.axisLeft(y));
+
+        svg2.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.suicide_num);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
+        svg2.append("text").attr("class", "x_label").attr("text-anchor", "end").attr("x", width - 110).attr("y", height + 50).text("Number of Suicides");
+        svg2.append("text").attr("class", "y_label").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
+        
+
+        x.domain([0, 12000]);
+        svg2.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-30)");
+        svg2.select("x_label").transition().duration(1000)
+            .attr("opacity", "1")
+            .text("Number of Suicides")
+            .call(d3.axisBottom(x));
+
+        svg2.selectAll("circle").transition().delay(function(d,i){return(i*3)}).duration(1000)
+            .attr("cx", function (d) { return x(d.suicide_num); })
+            .attr("cy", function (d) { return y(d.gdp_capita); })
+
+
+
+        
+
+
+
+        
         // x axis (population) vs y axis (gdp_capita)
-        var margin = {top: 10, right: 30, bottom: 75, left: 80}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
+        var margin = {top: 50, right: 30, bottom: 60, left: 80}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
         var svg2 = d3.select("#scatterplot").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         
         var x = d3.scaleLinear().domain([0, 0]).range([0, width]);
@@ -51,7 +83,7 @@ var scatter = function(filepath){
         svg2.append("g").call(d3.axisLeft(y));
 
         svg2.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.population);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
-        svg2.append("text").attr("class", "x_label").attr("text-anchor", "end").attr("x", width - 150).attr("y", height + 60).text("Population");
+        svg2.append("text").attr("class", "x_label").attr("text-anchor", "end").attr("x", width - 130).attr("y", height + 55).text("Population");
         svg2.append("text").attr("class", "y_label").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
         
 
@@ -63,7 +95,7 @@ var scatter = function(filepath){
             .call(d3.axisBottom(x));
 
         svg2.selectAll("circle").transition().delay(function(d,i){return(i*3)}).duration(1000)
-            .attr("cx", function (d) { return x(d.population);})
+            .attr("cx", function (d) { return x(d.population); })
             .attr("cy", function (d) { return y(d.gdp_capita); })
     })
 }
