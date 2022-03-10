@@ -10,7 +10,6 @@ function finalproject(){
 var scatter = function(filepath){
     var data = d3.csv(filepath, function(i){
         return {"": parseInt(i[""]), country: i.country, year: parseInt(i.year), sex: i.sex, age: i.age, suicide_num: parseInt(i.suicides_no), population: i.population, suicides_100k: parseInt(i.suicides_100k), gdp_yearly: i.gdp_yearly, gdp_capita: i.gdp_capita, gen: i.generation}
-        //return {Longitude: parseFloat(i.longitude), Latitude: parseFloat(i.latitude), Median_House_Age: parseFloat(i.housing_median_age), Total_Rooms: parseFloat(i.total_rooms), Total_Bedrooms: parseFloat(i.total_bedrooms), Population: parseFloat(i.population), Households: parseFloat(i.households), Median_Income: parseFloat(i.median_income), Median_House_Value: parseFloat(i.median_house_value), Ocean_Proximity: i.ocean_proximity};
     });
 
     data.then(function(data){
@@ -92,7 +91,7 @@ var bar = function(filepath){
         for(i in Object.keys(sg))
             total.push({"country": Object.keys(sg)[i], "suicides_no": d3.sum(sg[Object.keys(sg)[i]])})
         
-        console.log(total)
+        //console.log(total)
 
         var x = d3.scaleBand().range([0, width]).domain(total.map(function(i){return i.country;})).padding(0.2);
         svg1.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").attr("transform", "translate(-10,0)rotate(-45)").style("text-anchor", "end").attr("fill", "black");
@@ -140,43 +139,102 @@ var bar = function(filepath){
     })
 }
 
-var stacked = function(filepath){}
+var stacked = function(filepath){
+    var data = d3.csv(filepath, function(i){
+        return {"": parseInt(i[""]), country: i.country, year: parseInt(i.year), sex: i.sex, age: i.age, suicide_num: parseInt(i.suicides_no), population: i.population, suicides_100k: parseInt(i.suicides_100k), gdp_yearly: i.gdp_yearly, gdp_capita: i.gdp_capita, gen: i.generation}        
+    });
+
+    data.then(function(data){
+        data = data.filter(i => i.year <= 2013);
+        var temp = d3.rollups(data, i => d3.sum(i, j => j.suicide_num), j => j.year, k => k.country).sort();
+        console.log(temp);
+
+        /*var med_freq = d3.rollups(data, v => v.length, d => d.year).sort();
+        console.log(med_freq);*/
+
+        var mapper = temp.map(i => [['year', i[0]], i[1][0], i[1][1], i[1][2]]).map(j => Object.fromEntries(j));
+        console.log(mapper);
+
+        var arr = d3.stack().keys(['Canada', 'Mexico', 'United States']);
+        var series = arr(mapper);
+
+        var margin = {top: 50, left: 50, right: 50, bottom: 50}, width = 1200, height = 800;
+        var q4 = d3.select("#stacked").append("svg").attr("width", width).attr("height", height).attr("id", "svg_box")
+        
+        var x_scale = d3.scaleBand().domain(d3.range(temp.length)).range([margin.left, width - margin.right - margin.left]).padding(0.05);
+        var y_scale = d3.scaleLinear().domain([0, 55000]).range([height - margin.top, margin.bottom]); 
+        
+        q4.append("g").attr("transform", "translate(0, " + (height - margin.bottom) + ")").call(d3.axisBottom(x_scale).tickFormat(i => temp.sort()[i][0])).selectAll("text").attr("transform", "rotate(-65)");
+        q4.append("g").attr("transform", "translate(" + margin.left + ", 0)").call(d3.axisLeft(y_scale));
+
+        var filler = function(i){
+            fills = ["rgb(104, 179, 163)", "rgb(135, 175, 230)", "rgb(230, 130, 130)"];
+            return fills[i];    
+        }
+
+        var groups = q4.selectAll(".stackbars").data(series).enter().append("g").attr("class", "stackbars").attr("fill", function(i, j){return filler(j);})
+        var rects = groups.selectAll("rect").data(function(i){return i;}).enter().append("rect").attr("x", function(i, j){return x_scale(j);}).attr("y", function (d){return y_scale(d[1]);}).attr("width", function(i){return x_scale.bandwidth();}).attr("height", function(i){return y_scale(i[0]) - y_scale(i[1]);})
+
+        q4.append("circle").attr("cx", 100).attr("cy", 70).attr("r", 6).style("fill", "rgb(104, 179, 163)")
+        q4.append("circle").attr("cx", 100).attr("cy", 90).attr("r", 6).style("fill", "rgb(135, 175, 230)")
+        q4.append("circle").attr("cx", 100).attr("cy", 110).attr("r", 6).style("fill", "rgb(230, 130, 130)")
+        q4.append("text").attr("x", 120).attr("y", 70).text("Canada").style("font-size", "15px").attr("alignment-baseline", "middle")
+        q4.append("text").attr("x", 120).attr("y", 90).text("Mexico").style("font-size", "15px").attr("alignment-baseline", "middle")
+        q4.append("text").attr("x", 120).attr("y", 110).text("United States").style("font-size", "15px").attr("alignment-baseline", "middle")
+    })
+}
 
 var stream = function(filepath){}
 
 var boxplot = function(filepath){
-    var data = d3.csv(filepath, function(i){
+    /*var data = d3.csv(filepath, function(i){
         return {"": parseInt(i[""]), country: i.country, year: parseInt(i.year), sex: i.sex, age: i.age, suicide_num: parseInt(i.suicides_no), population: i.population, suicides_100k: parseInt(i.suicides_100k), gdp_yearly: i.gdp_yearly, gdp_capita: i.gdp_capita, gen: i.generation}
-    });
+    });*/
     
-    data.then(function(data){
+    /*data.then(function(data){
         var margin = {top: 10, right: 30, bottom: 75, left: 80}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
         var svg1 = d3.select("#boxplot").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        /*var sumstat = d3.nest().key(function(d) { return d.year;}).rollup(function(d) {
-                                                                    q1 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.25)
-                                                                    median = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.5)
-                                                                    q3 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.75)
-                                                                    interQuantileRange = q3 - q1
-                                                                    min = q1 - 1.5 * interQuantileRange
-                                                                    max = q3 + 1.5 * interQuantileRange
-                                                                    return({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: min, max: max})}).entries(data)*/
-                                                                    
+        var sumstat = d3.rollup(data, function(d) {
+            
 
-        var testing = d3.rollup(data, i => d3.sum(i, j => j.suicides_100k), k => k.year);
-        console.log(testing);
-
-        temp = Array.from(testing);
-        console.log(temp);
-
-        var q1 = d3.quantile(Object.values(testing).sort(d3.ascending), 0.25);
-        var med = d3.quantile(Object.values(testing).sort(d3.ascending), 0.5);
-        var q3 = d3.quantile(Object.values(testing).sort(d3.ascending), 0.75);
-        var iqr = q3 - q1;
-        var min = q1 - 1.5 * iqr;
-        var max = q3 + 1.5 * iqr;
+            q1 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.25)
+            median = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.5)
+            q3 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.75)
+            interQuantileRange = q3 - q1
+            min = q1 - 1.5 * interQuantileRange
+            max = q3 + 1.5 * interQuantileRange
+            return({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: min, max: max})
+        
+        })                                                                
 
         //var sumstat = ({q1: q1, med: med, q3: q3, iqr: iqr, min: min, max: max})
-        //console.log(sumstat);
-    });
+        console.log(sumstat);        
+    });*/
+
+    /*data.then(function(data){
+        const countries = data.map(d => d.country);
+        const years = range(1985, 2016);
+        const deathrate = data.map(d => d.suicides_no);        
+        var sg = {}
+
+        console.log(countries);
+
+        var mexico = {}; //year: deaths
+        var usa = {}
+        var canada = {};
+        var j = 0;
+        for (var i in years){
+            for(var j in countries){
+                if(j in sg){
+                    if(j == "Mexico")
+                        mexico[i].push()
+                }
+                else{
+
+                }
+            }
+            console.log("hello");
+        }
+    })*/
 }
