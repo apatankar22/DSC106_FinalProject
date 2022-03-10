@@ -149,8 +149,8 @@ var stacked = function(filepath){
         var temp = d3.rollups(data, i => d3.sum(i, j => j.suicide_num), j => j.year, k => k.country).sort();
         console.log(temp);
 
-        /*var med_freq = d3.rollups(data, v => v.length, d => d.year).sort();
-        console.log(med_freq);*/
+        var med_freq = d3.rollups(data, i => d3.sum(i, j => j.suicide_num), d => d.year).sort();
+        console.log(med_freq);
 
         var mapper = temp.map(i => [['year', i[0]], i[1][0], i[1][1], i[1][2]]).map(j => Object.fromEntries(j));
         console.log(mapper);
@@ -158,14 +158,14 @@ var stacked = function(filepath){
         var arr = d3.stack().keys(['Canada', 'Mexico', 'United States']);
         var series = arr(mapper);
 
-        var margin = {top: 50, left: 50, right: 50, bottom: 50}, width = 1200, height = 800;
+        /*var margin = {top: 50, left: 50, right: 50, bottom: 50}, width = 1200, height = 800;
         var q4 = d3.select("#stacked").append("svg").attr("width", width).attr("height", height).attr("id", "svg_box")
         
         var x_scale = d3.scaleBand().domain(d3.range(temp.length)).range([margin.left, width - margin.right - margin.left]).padding(0.05);
         var y_scale = d3.scaleLinear().domain([0, 55000]).range([height - margin.top, margin.bottom]); 
         
         q4.append("g").attr("transform", "translate(0, " + (height - margin.bottom) + ")").call(d3.axisBottom(x_scale).tickFormat(i => temp.sort()[i][0])).selectAll("text").attr("transform", "rotate(-65)");
-        q4.append("g").attr("transform", "translate(" + margin.left + ", 0)").call(d3.axisLeft(y_scale));
+        q4.append("g").attr("transform", "translate(" + margin.left + ", 10)").call(d3.axisLeft(y_scale));
 
         var filler = function(i){
             fills = ["rgb(104, 179, 163)", "rgb(135, 175, 230)", "rgb(230, 130, 130)"];
@@ -173,14 +173,41 @@ var stacked = function(filepath){
         }
 
         var groups = q4.selectAll(".stackbars").data(series).enter().append("g").attr("class", "stackbars").attr("fill", function(i, j){return filler(j);})
-        var rects = groups.selectAll("rect").data(function(i){return i;}).enter().append("rect").attr("x", function(i, j){return x_scale(j);}).attr("y", function (d){return y_scale(d[1]);}).attr("width", function(i){return x_scale.bandwidth();}).attr("height", function(i){return y_scale(i[0]) - y_scale(i[1]);})
+        var rects = groups.selectAll("rect").data(function(i){return i;}).enter().append("rect").attr("x", function(i, j){return x_scale(j);}).attr("y", function (d){return y_scale(d[1]);}).attr("width", function(i){return x_scale.bandwidth();}).attr("height", function(i){return y_scale(i[0]) - y_scale(i[1]);})*/
 
-        q4.append("circle").attr("cx", 100).attr("cy", 70).attr("r", 6).style("fill", "rgb(104, 179, 163)")
-        q4.append("circle").attr("cx", 100).attr("cy", 90).attr("r", 6).style("fill", "rgb(135, 175, 230)")
-        q4.append("circle").attr("cx", 100).attr("cy", 110).attr("r", 6).style("fill", "rgb(230, 130, 130)")
-        q4.append("text").attr("x", 120).attr("y", 70).text("Canada").style("font-size", "15px").attr("alignment-baseline", "middle")
-        q4.append("text").attr("x", 120).attr("y", 90).text("Mexico").style("font-size", "15px").attr("alignment-baseline", "middle")
-        q4.append("text").attr("x", 120).attr("y", 110).text("United States").style("font-size", "15px").attr("alignment-baseline", "middle")
+        
+
+        var margin = {top: 50, left: 100, right: 50, bottom: 100}, width = 1000, height = 800;
+        var q4 = d3.select("#q4_plot").append("svg").attr("width", width).attr("height", height).attr("id", "svg_box")
+        
+        var x_scale = d3.scaleBand().domain(d3.range(temp.length)).range([margin.left, width - margin.right - margin.left]).padding(0.05);
+        var y_scale = d3.scaleLinear().domain([0, d3.max(med_freq.map(i => i[1]))]).range([height - margin.bottom, margin.bottom]); 
+        
+        q4.append("g").attr("transform", "translate(0, " + (height - margin.bottom) + ")").call(d3.axisBottom(x_scale).tickFormat(i => temp.sort()[i][0]));
+        q4.append("g").attr("transform", "translate(" + margin.left + ", 0)").call(d3.axisLeft(y_scale));
+
+        /*var filler = function(i){
+            fills = ["rgb(104, 179, 163)", "rgb(135, 175, 230)", "rgb(230, 130, 130)"];
+            return fills[i];
+        }*/
+
+        var filler_col = ["rgb(104, 179, 163)", "rgb(135, 175, 230)", "rgb(230, 130, 130)"];
+        var groups = q4.selectAll(".gbars").data(series).enter().append("g").attr("class", "gbars").attr("fill", function(i, j){return filler_col[j];})
+        var rects = groups.selectAll("rect").data(function(i){return i;}).enter().append("rect").attr("x", function(i, j){return x_scale(j);})
+                                                                                                .attr("y", function (d){return y_scale(d[1]);})
+                                                                                                .attr("width", function(i){return x_scale.bandwidth();})
+                                                                                                .attr("height", function(i){return y_scale(i[0])-y_scale(i[1]);})
+
+
+
+
+        q4.append("circle").attr("cx", 120).attr("cy", 110).attr("r", 6).style("fill", "rgb(104, 179, 163)")
+        q4.append("circle").attr("cx", 120).attr("cy", 130).attr("r", 6).style("fill", "rgb(135, 175, 230)")
+        q4.append("circle").attr("cx", 120).attr("cy", 150).attr("r", 6).style("fill", "rgb(230, 130, 130)")
+        q4.append("text").attr("x", 140).attr("y", 110).text("Canada").style("font-size", "15px").attr("alignment-baseline", "middle")
+        q4.append("text").attr("x", 140).attr("y", 130).text("Mexico").style("font-size", "15px").attr("alignment-baseline", "middle")
+        q4.append("text").attr("x", 140).attr("y", 150).text("United States").style("font-size", "15px").attr("alignment-baseline", "middle")
+        q4.append("text").attr("x", -450).attr("y", 35).attr("transform", "rotate(-90)").text("Number of Suicides");
     })
 }
 
