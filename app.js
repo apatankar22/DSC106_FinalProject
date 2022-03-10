@@ -68,8 +68,6 @@ var scatter = function(filepath){
 
 
 
-        
-
 
 
         
