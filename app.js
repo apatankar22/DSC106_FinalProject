@@ -36,6 +36,8 @@ var scatter = function(filepath){
             .attr("cx", function (d) { return x(d.suicides_100k);})
             .attr("cy", function (d) { return y(d.gdp_capita); })
 
+        svg1.append("text").attr("x", (width/2 - 25)).attr("y", 0 - (margin.top/2)).attr("text-anchor", "middle").style("font-size", "16px").style("text-decoration", "underline").text("Suicide Rates (#/100K individuals) vs GDP per Capita from 1985-2016");
+
 
         //Graph 2
         // x axis (suicide_num) vs y axis (gdp_capita)
@@ -60,31 +62,35 @@ var scatter = function(filepath){
         svg2.selectAll("circle").transition().delay(function(d,i){return(i*3)}).duration(1000)
             .attr("cx", function (d) {return x(d.suicide_num);})
             .attr("cy", function (d) {return y(d.gdp_capita);})
+            
+        svg2.append("text").attr("x", (width/2 - 25)).attr("y", 0 - (margin.top/2)).attr("text-anchor", "middle").style("font-size", "16px").style("text-decoration", "underline").text("Number of Suicides vs GDP per Capita from 1985-2016");
 
 
         //Graph 3
         // x axis (population) vs y axis (gdp_capita)
         var margin = {top: 50, right: 30, bottom: 60, left: 80}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
-        var svg2 = d3.select("#scatterplot").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var svg3 = d3.select("#scatterplot").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         
         var x = d3.scaleLinear().domain([0, 0]).range([0, width]);
         var y = d3.scaleLinear().domain([0, 65000]).range([height, 0]);
         
-        svg2.append("g").call(d3.axisLeft(y));
-        svg2.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.population);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
-        svg2.append("text").attr("class", "x_label").attr("text-anchor", "end").attr("x", width - 130).attr("y", height + 55).text("Population");
-        svg2.append("text").attr("class", "y_label").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
+        svg3.append("g").call(d3.axisLeft(y));
+        svg3.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.population);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
+        svg3.append("text").attr("class", "x_label").attr("text-anchor", "end").attr("x", width - 130).attr("y", height + 55).text("Population");
+        svg3.append("text").attr("class", "y_label").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
         
         x.domain([0, 45000000]);
-        svg2.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-30)");
-        svg2.select("x_label").transition().duration(1000)
+        svg3.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-30)");
+        svg3.select("x_label").transition().duration(1000)
             .attr("opacity", "1")
             .text("Population")
             .call(d3.axisBottom(x));
 
-        svg2.selectAll("circle").transition().delay(function(d,i){return(i*3)}).duration(1000)
+        svg3.selectAll("circle").transition().delay(function(d,i){return(i*3)}).duration(1000)
             .attr("cx", function (d) { return x(d.population); })
             .attr("cy", function (d) { return y(d.gdp_capita); })
+            
+        svg3.append("text").attr("x", (width/2 - 25)).attr("y", 0 - (margin.top/2)).attr("text-anchor", "middle").style("font-size", "16px").style("text-decoration", "underline").text("Population vs GDP per Capita from 1985-2016");
     })
 }
 
@@ -116,7 +122,8 @@ var bar = function(filepath){
         var x = d3.scaleBand().range([0, width]).domain(total.map(function(i){return i.country;})).padding(0.2);
         var y = d3.scaleLinear().domain([0, 1100000]).range([height, 0]);
 
-        svg1.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").attr("transform", "translate(-10,0)rotate(-45)").style("text-anchor", "end").attr("fill", "black");
+        //svg1.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").attr("transform", "translate(-10,0)rotate(-45)").style("text-anchor", "end").attr("fill", "black");
+        svg1.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").style("text-anchor", "end").attr("fill", "black").style("font-size", "18px");
         svg1.append("g").call(d3.axisLeft(y));
 
         const tooltip = d3.select("#bar")
@@ -127,7 +134,7 @@ var bar = function(filepath){
             .style("border", "solid")
             .style("border-width", "1px")
             .style("border-radius", "5px")
-            .style("padding", "10px")
+            .style("padding", "10px");
 
         const mouseover1 = function(event, d) {
             tooltip.style("opacity", 1)
@@ -137,6 +144,10 @@ var bar = function(filepath){
             tooltip.html(`The number of suicides is : ${d.suicides_no}`)
                     .style("left", (event.x)/2 + "px") 
                     .style("top", (event.y)/2 + "px")
+                    //.style("left", (d3.mouse(this)[0] + 70) + "px") 
+                    //.style("top", (d3.mouse(this)[1]) + "px")
+                    //.style("left", d3.select(this).attr("cx") + "px") 
+                    //.style("top", d3.select(this).attr("cy") + "px")
         }
 
         const mouseleave1 = function(event,d) {
@@ -153,8 +164,8 @@ var bar = function(filepath){
 
         
         svg1.append("text").attr("x", (width/2)).attr("y", 0 - (margin.top/2)).attr("text-anchor", "middle").style("font-size", "28px").style("text-decoration", "underline").text("Suicide Numbers in Canada, Mexico, and USA in 1985-2016");
-        svg1.append("text").attr("class", "x label").attr("text-anchor", "end").attr("x", width - 300).attr("y", height + 70).text("Countries");
-        svg1.append("text").attr("class", "y label").attr("text-anchor", "end").attr("x", -300).attr("y", -80).attr("dy", ".75em").attr("transform", "rotate(-90)").text("Number of Suicide from 1985-2016");
+        svg1.append("text").attr("class", "x label").attr("text-anchor", "end").attr("x", width - 300).attr("y", height + 70).text("Countries").style("font-size", "28px");
+        svg1.append("text").attr("class", "y label").attr("text-anchor", "end").attr("x", -125).attr("y", -80).attr("dy", ".75em").attr("transform", "rotate(-90)").text("Number of Suicide from 1985-2016").style("font-size", "28px");
     })
 }
 
@@ -197,8 +208,8 @@ var stacked1 = function(filepath){
         q4.append("text").attr("x", 140).attr("y", 110).text("Canada").style("font-size", "15px").attr("alignment-baseline", "middle")
         q4.append("text").attr("x", 140).attr("y", 130).text("Mexico").style("font-size", "15px").attr("alignment-baseline", "middle")
         q4.append("text").attr("x", 140).attr("y", 150).text("United States").style("font-size", "15px").attr("alignment-baseline", "middle")
-        q4.append("text").attr("x", -450).attr("y", 35).attr("transform", "rotate(-90)").text("Number of Suicides");
-        q4.append("text").attr("x", 450).attr("y", 750).text("Years");
+        q4.append("text").attr("x", -450).attr("y", 35).attr("transform", "rotate(-90)").text("Number of Suicides").style("font-size", "28px");
+        q4.append("text").attr("x", 450).attr("y", 750).text("Years").style("font-size", "28px");
     })
 }
 
@@ -248,8 +259,8 @@ var stacked2 = function(filepath){
         q4.append("text").attr("x", 140).attr("y", 150).text("25-34 Years Old").style("font-size", "15px").attr("alignment-baseline", "middle")
         q4.append("text").attr("x", 140).attr("y", 130).text("15-24 Years Old").style("font-size", "15px").attr("alignment-baseline", "middle")
         q4.append("text").attr("x", 140).attr("y", 110).text("5-14 Years Old").style("font-size", "15px").attr("alignment-baseline", "middle")
-        q4.append("text").attr("x", -450).attr("y", 35).attr("transform", "rotate(-90)").text("Number of Suicides");
-        q4.append("text").attr("x", 450).attr("y", 750).text("Years");
+        q4.append("text").attr("x", -450).attr("y", 35).attr("transform", "rotate(-90)").text("Number of Suicides").style("font-size", "28px");
+        q4.append("text").attr("x", 450).attr("y", 750).text("Years").style("font-size", "28px");
     })
 }
 
