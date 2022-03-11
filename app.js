@@ -208,6 +208,7 @@ var stacked1 = function(filepath){
         q4.append("text").attr("x", 140).attr("y", 110).text("Canada").style("font-size", "15px").attr("alignment-baseline", "middle")
         q4.append("text").attr("x", 140).attr("y", 130).text("Mexico").style("font-size", "15px").attr("alignment-baseline", "middle")
         q4.append("text").attr("x", 140).attr("y", 150).text("United States").style("font-size", "15px").attr("alignment-baseline", "middle")
+        q4.append("text").attr("x", (width/2)).attr("y", 0 - (margin.top/2)).attr("text-anchor", "middle").style("font-size", "28px").style("text-decoration", "underline").text("Suicide Numbers in Canada, Mexico, and USA in 1985-2016");
         q4.append("text").attr("x", -450).attr("y", 35).attr("transform", "rotate(-90)").text("Number of Suicides").style("font-size", "28px");
         q4.append("text").attr("x", 450).attr("y", 750).text("Years").style("font-size", "28px");
     })
