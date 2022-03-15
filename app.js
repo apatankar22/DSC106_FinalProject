@@ -265,7 +265,65 @@ var stacked2 = function(filepath){
     })
 }
 
-var stream = function(filepath){}
+var stream = function(filepath){
+    var csv = d3.csv(filepath, function(i){return {"": parseInt(i[""]), country: i.country, year: parseInt(i.year), sex: i.sex, age: i.age, suicide_num: parseInt(i.suicides_no), population: i.population, suicides_100k: parseInt(i.suicides_100k), gdp_yearly: i.gdp_yearly, gdp_capita: i.gdp_capita, gen: i.generation}});
+    csv.then(function (data) {
+
+        data = data.filter(function (d) {return d.year <=2013;})
+
+        var canada = data.filter(function (d) { return d.country === "Canada";})
+            //.rollup(data, v => d3.sum(v, d => d.suicide_num), d => d.year)
+        canada = d3.rollups(canada, v => d3.sum(v, d => d.suicide_num), d => d.year)
+            .map(([k, v]) => ({ year: k, Canada: v}))
+
+        var mexico = data.filter(function (d) { return d.country === "Mexico";})
+        //.rollup(data, v => d3.sum(v, d => d.suicide_num), d => d.year)
+        mexico = d3.rollups(mexico, v => d3.sum(v, d => d.suicide_num), d => d.year)
+            .map(([k, v]) => ({ year: k, Mexico: v}))
+
+        var US = data.filter(function (d) { return d.country === "United States";})
+        //.rollup(data, v => d3.sum(v, d => d.suicide_num), d => d.year)
+        US = d3.rollups(US, v => d3.sum(v, d => d.suicide_num), d => d.year)
+            .map(([k, v]) => ({ year: k, United_States: v}))
+
+        data = US;
+        for (var i = 0; i < US.length; i++) {
+            data[i]['Canada'] = canada[i]['Canada']
+            data[i]['Mexico'] = mexico[i]['Mexico']
+        }
+        var group_data=d3.group(data, d=>d.year);
+        //console.log(group_data)
+        var types=["United_States","Canada","Mexico"];
+        var years= Array.from(group_data.keys()).sort();
+
+        var width=1000;
+        var height=800;
+        var margin=50;
+
+        data.forEach(d=>{
+            d.year=d3.timeParse("%Y")(d.year);
+        })
+        console.log(data);
+
+        const svg=d3.select("#stream").append("svg").attr("width",width).attr("height",height);
+        var x=d3.scaleTime().domain(d3.extent(data,d=>d.year)).range([margin,width-margin]);
+        const y=d3.scaleLinear().domain([0,d3.max(data,function(d){return d.Canada+d.United_States+d.Mexico})+20]).range([height-margin,margin]);
+        const x_axis=d3.axisBottom(x).ticks(years.length)
+        const y_axis=d3.axisLeft(y)
+        svg.append('g').attr('transform',`translate(${margin},0)`).call(y_axis).append("text").attr('text-anchor',"end");
+        svg.append('g').attr('transform',`translate(0,${height-margin})`).call(x_axis).selectAll("text").attr("text-anchor","end").attr("transform","rotate(-45)");
+
+        var color=d3.scaleOrdinal().domain(types).range(['pink','red','blue']);
+        var stack=d3.stack().keys(types)(data);
+        console.log(stack)
+
+        svg.selectAll('mylayers').data(stack).enter().append('path').style('fill',d=> color(d.key))
+            .attr("d",d3.area()
+                .x(d=>x(d.data.year))
+                .y0(d=>y(d[0]))
+                .y1(d=>y(d[1])))
+    })
+}
 
 var boxplot = function(filepath){
     /*var data = d3.csv(filepath, function(i){
