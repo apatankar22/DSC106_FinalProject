@@ -272,17 +272,16 @@ var stream = function(filepath){
         data = data.filter(function (d) {return d.year <=2013;})
 
         var canada = data.filter(function (d) { return d.country === "Canada";})
-            //.rollup(data, v => d3.sum(v, d => d.suicide_num), d => d.year)
         canada = d3.rollups(canada, v => d3.sum(v, d => d.suicide_num), d => d.year)
             .map(([k, v]) => ({ year: k, Canada: v}))
 
         var mexico = data.filter(function (d) { return d.country === "Mexico";})
-        //.rollup(data, v => d3.sum(v, d => d.suicide_num), d => d.year)
+
         mexico = d3.rollups(mexico, v => d3.sum(v, d => d.suicide_num), d => d.year)
             .map(([k, v]) => ({ year: k, Mexico: v}))
 
         var US = data.filter(function (d) { return d.country === "United States";})
-        //.rollup(data, v => d3.sum(v, d => d.suicide_num), d => d.year)
+
         US = d3.rollups(US, v => d3.sum(v, d => d.suicide_num), d => d.year)
             .map(([k, v]) => ({ year: k, United_States: v}))
 
@@ -303,7 +302,6 @@ var stream = function(filepath){
         data.forEach(d=>{
             d.year=d3.timeParse("%Y")(d.year);
         })
-        console.log(data);
 
         const svg=d3.select("#stream").append("svg").attr("width",width).attr("height",height);
         var x=d3.scaleTime().domain(d3.extent(data,d=>d.year)).range([margin,width-margin]);
@@ -313,7 +311,7 @@ var stream = function(filepath){
         svg.append('g').attr('transform',`translate(${margin},0)`).call(y_axis).append("text").attr('text-anchor',"end");
         svg.append('g').attr('transform',`translate(0,${height-margin})`).call(x_axis).selectAll("text").attr("text-anchor","end").attr("transform","rotate(-45)");
 
-        var color=d3.scaleOrdinal().domain(types).range(['pink','red','blue']);
+        var color=d3.scaleOrdinal().domain(types).range([d3.rgb(104, 179, 163),d3.rgb(135, 175, 230),d3.rgb(230, 130, 130)]);
         var stack=d3.stack().keys(types)(data);
         console.log(stack)
 
@@ -326,54 +324,158 @@ var stream = function(filepath){
 }
 
 var boxplot = function(filepath){
-    /*var data = d3.csv(filepath, function(i){
+    var data = d3.csv(filepath, function(i){
         return {"": parseInt(i[""]), country: i.country, year: parseInt(i.year), sex: i.sex, age: i.age, suicide_num: parseInt(i.suicides_no), population: i.population, suicides_100k: parseInt(i.suicides_100k), gdp_yearly: i.gdp_yearly, gdp_capita: i.gdp_capita, gen: i.generation}
-    });*/
+    });
     
-    /*data.then(function(data){
+    data.then(function(data){
         var margin = {top: 10, right: 30, bottom: 75, left: 80}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
         var svg1 = d3.select("#boxplot").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var sumstat = d3.rollup(data, function(d) {
+        const allGroup = ["United States", "Canada", "Mexico"];
+
+        d3.select("#selectButton")
+            .selectAll('myOptions')
+            .data(allGroup)
+            .enter()
+            .append('option')
+            .text(function (d) { return d; }) // text showed in the menu
+            .attr("value", function (d) { return d; })
+
+        var US = data.filter(function(d) {return d.country === "United States"});
+
+        var sumstat = d3.rollup(US, function(d) {
             
 
             q1 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.25)
-            median = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.5)
+            var median = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.5)
             q3 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.75)
             interQuantileRange = q3 - q1
-            min = q1 - 1.5 * interQuantileRange
-            max = q3 + 1.5 * interQuantileRange
+            var min = q1 - 1.5 * interQuantileRange
+            var max = q3 + 1.5 * interQuantileRange
             return({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: min, max: max})
         
-        })                                                                
+        })
 
-        //var sumstat = ({q1: q1, med: med, q3: q3, iqr: iqr, min: min, max: max})
-        console.log(sumstat);        
-    });*/
+        var y = d3.scaleLinear()
+            .domain([sumstat.min,sumstat.max])
+            .range([height, 0]);
+        svg1.call(d3.axisLeft(y))
 
-    /*data.then(function(data){
-        const countries = data.map(d => d.country);
-        const years = range(1985, 2016);
-        const deathrate = data.map(d => d.suicides_no);        
-        var sg = {}
+        var myColor = d3.scaleOrdinal()
+            .domain(allGroup)
+            .range(d3.schemeSet2);
 
-        console.log(countries);
+        var center = 200
+        var width = 100
 
-        var mexico = {}; //year: deaths
-        var usa = {}
-        var canada = {};
-        var j = 0;
-        for (var i in years){
-            for(var j in countries){
-                if(j in sg){
-                    if(j == "Mexico")
-                        mexico[i].push()
-                }
-                else{
+// Show the main vertical line
+        const line = svg1
+            .append("line")
+            .attr("x1", center)
+            .attr("x2", center)
+            .attr("y1", y(sumstat.min) )
+            .attr("y2", y(sumstat.max) )
+            .attr("stroke", "black")
 
-                }
-            }
-            console.log("hello");
+// Show the box
+        const box = svg1
+            .append("rect")
+            .attr("x", center - width/2)
+            .attr("y", y(sumstat.q3) )
+            .attr("height", (y(sumstat.q1)-y(sumstat.q3)) )
+            .attr("width", width )
+            .attr("stroke", "black")
+            .style("fill", "#69b3a2")
+
+// show median, min and max horizontal lines
+        const min = svg1
+            .append("line")
+            .attr("x1", center-width/2)
+            .attr("x2", center+width/2)
+            .attr("y1", y(sumstat.min) )
+            .attr("y2", y(sumstat.min) )
+            .attr("stroke", "black")
+
+        const median = svg1
+            .append("line")
+            .attr("x1", center-width/2)
+            .attr("x2", center+width/2)
+            .attr("y1", y(sumstat.median) )
+            .attr("y2", y(sumstat.median) )
+            .attr("stroke", "black")
+
+        const max = svg1
+            .append("line")
+            .attr("x1", center-width/2)
+            .attr("x2", center+width/2)
+            .attr("y1", y(sumstat.max) )
+            .attr("y2", y(sumstat.max) )
+            .attr("stroke", "black")
+
+        function update(selectedGroup) {
+
+            // Create new data with the selection?
+            const dataFilter = data.filter(function (d) {return d.country === selectedGroup;})
+
+            var sumstat = d3.rollup(dataFilter, function(d) {
+
+
+                q1 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.25)
+                var median = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.5)
+                q3 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.75)
+                interQuantileRange = q3 - q1
+                var min = q1 - 1.5 * interQuantileRange
+                var max = q3 + 1.5 * interQuantileRange
+                return({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: min, max: max})
+
+            })
+
+            console.log(sumstat);
+            // Give these new data to update line
+            line
+                .transition()
+                .duration(1000)
+                .attr("y1", y(sumstat.min)
+                )
+                .attr("y2", y(sumstat.max))
+
+
+            box
+                .transition()
+                .duration(1000)
+                .attr("y", y(sumstat.q3))
+                .attr("height", (y(sumstat.q1)-y(sumstat.q3)))
+                .style("fill", function(d){ return myColor(selectedGroup) })
+
+
+            min
+                .transition()
+                .duration(1000)
+                .attr("y1", y(sumstat.min))
+                .attr("y2", y(sumstat.min))
+
+            median
+                .transition()
+                .duration(1000)
+                .attr("y1", y(sumstat.median))
+                .attr("y2", y(sumstat.median))
+
+            max
+                .transition()
+                .duration(1000)
+                .attr("y1", y(sumstat.max))
+                .attr("y2", y(sumstat.max))
+
+
         }
-    })*/
+
+        // When the button is changed, run the updateChart function
+        d3.select("#selectButton").on("change", function(event,d) {
+            // recover the option that has been chosen
+            const selectedOption = d3.select(this).property("value")
+            // run the updateChart function with this selected option
+            update(selectedOption)
+        })
+    });
 }
