@@ -301,9 +301,13 @@ var stream = function(filepath){
         data.forEach(d=>{d.year= d3.timeParse("%Y")(d.year);})
 
         const svg = d3.select("#stream").append("svg").attr("width",width).attr("height",height);
+        svg.append("text").attr("x", 450).attr("y", 800).text("Years").style("font-size", "28px");
+        svg.append("text").attr("x", -500).attr("y", 15).text("Number of Suicides").style("font-size", "28px").attr("transform","rotate(-90)");
+        svg.append("text").attr("x", 275).attr("y", 20).text("Number of Suicides through the Years").style("font-size", "28px");
+
         var x = d3.scaleTime().domain(d3.extent(data,d=>d.year)).range([margin,width-margin]);
         const y = d3.scaleLinear().domain([0,d3.max(data,function(d){return d.Canada+d.United_States+d.Mexico})+20]).range([height-margin,margin]);
-        const x_axis = d3.axisBottom(x).ticks(years.length)
+        const x_axis = d3.axisBottom(x).ticks(years.length);
         const y_axis = d3.axisLeft(y)
         svg.append('g').attr('transform',`translate(${margin},0)`).call(y_axis).append("text").attr('text-anchor',"end");
         svg.append('g').attr('transform',`translate(0,${height-margin})`).call(x_axis).selectAll("text").attr("text-anchor","end").attr("transform","rotate(-45)");
