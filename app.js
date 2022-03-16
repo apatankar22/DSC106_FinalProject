@@ -295,21 +295,23 @@ var stream = function(filepath){
         var types=["United_States","Canada","Mexico"];
         var years= Array.from(group_data.keys()).sort();
 
+
+        var margin = {top: 50, left: 100, right: 50, bottom: 100}
         var width=1000;
         var height=800;
-        var margin=50;
+        //var margin=50;
 
         data.forEach(d=>{
             d.year=d3.timeParse("%Y")(d.year);
         })
 
         const svg=d3.select("#stream").append("svg").attr("width",width).attr("height",height);
-        var x=d3.scaleTime().domain(d3.extent(data,d=>d.year)).range([margin,width-margin]);
-        const y=d3.scaleLinear().domain([0,d3.max(data,function(d){return d.Canada+d.United_States+d.Mexico})+20]).range([height-margin,margin]);
+        var x=d3.scaleTime().domain(d3.extent(data,d=>d.year)).range([margin.left, width - margin.right - margin.left]);
+        const y=d3.scaleLinear().domain([0,d3.max(data,function(d){return d.Canada+d.United_States+d.Mexico})+20]).range([height - margin.bottom, margin.bottom]);
         const x_axis=d3.axisBottom(x).ticks(years.length)
         const y_axis=d3.axisLeft(y)
-        svg.append('g').attr('transform',`translate(${margin},0)`).call(y_axis).append("text").attr('text-anchor',"end");
-        svg.append('g').attr('transform',`translate(0,${height-margin})`).call(x_axis).selectAll("text").attr("text-anchor","end").attr("transform","rotate(-45)");
+        svg.append("g").attr("transform", "translate(0, " + (height - margin.bottom) + ")").call(d3.axisBottom(x));
+        svg.append("g").attr("transform", "translate(" + margin.left + ", 0)").call(d3.axisLeft(y));
 
         var color=d3.scaleOrdinal().domain(types).range([d3.rgb(104, 179, 163),d3.rgb(135, 175, 230),d3.rgb(230, 130, 130)]);
         var stack=d3.stack().keys(types)(data);
@@ -320,6 +322,11 @@ var stream = function(filepath){
                 .x(d=>x(d.data.year))
                 .y0(d=>y(d[0]))
                 .y1(d=>y(d[1])))
+
+
+
+        svg.append("text").attr("x", -450).attr("y", 35).attr("transform", "rotate(-90)").text("Number of Suicides").style("font-size", "28px");
+        svg.append("text").attr("x", 450).attr("y", 750).text("Years").style("font-size", "28px");
     })
 }
 
@@ -412,6 +419,7 @@ var boxplot = function(filepath){
             .attr("y1", y(sumstat.max) )
             .attr("y2", y(sumstat.max) )
             .attr("stroke", "black")
+
 
         function update(selectedGroup) {
 
