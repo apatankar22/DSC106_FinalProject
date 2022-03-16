@@ -21,7 +21,7 @@ var scatter = function(filepath){
         var y = d3.scaleLinear().domain([0, 65000]).range([height, 0]);
 
         svg1.append("g").call(d3.axisLeft(y));
-        svg1.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.suicides_100k);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
+        svg1.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function(d){return x(d.suicides_100k);}).attr("cy", function(d){return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
         svg1.append("text").attr("class", "xlabel").attr("text-anchor", "end").attr("x", width - 80).attr("y", height + 40).text("Suicides per 100K Individuals");
         svg1.append("text").attr("class", "ylabel").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
 
@@ -33,8 +33,8 @@ var scatter = function(filepath){
             .call(d3.axisBottom(x));
 
         svg1.selectAll("circle").transition().delay(function(d,i){return(i*3)}).duration(1000)
-            .attr("cx", function (d) { return x(d.suicides_100k);})
-            .attr("cy", function (d) { return y(d.gdp_capita); })
+            .attr("cx", function(d){ return x(d.suicides_100k);})
+            .attr("cy", function(d){ return y(d.gdp_capita); })
 
         svg1.append("text").attr("x", (width/2 - 25)).attr("y", 0 - (margin.top/2)).attr("text-anchor", "middle").style("font-size", "16px").style("text-decoration", "underline").text("Suicide Rates (#/100K individuals) vs GDP per Capita from 1985-2016");
 
@@ -48,7 +48,7 @@ var scatter = function(filepath){
         var y = d3.scaleLinear().domain([0, 65000]).range([height, 0]);
         
         svg2.append("g").call(d3.axisLeft(y));
-        svg2.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.suicide_num);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
+        svg2.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function(d){return x(d.suicide_num);}).attr("cy", function(d){return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
         svg2.append("text").attr("class", "x_label").attr("text-anchor", "end").attr("x", width - 110).attr("y", height + 50).text("Number of Suicides");
         svg2.append("text").attr("class", "y_label").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
         
@@ -60,8 +60,8 @@ var scatter = function(filepath){
             .call(d3.axisBottom(x));
 
         svg2.selectAll("circle").transition().delay(function(d,i){return(i*3)}).duration(1000)
-            .attr("cx", function (d) {return x(d.suicide_num);})
-            .attr("cy", function (d) {return y(d.gdp_capita);})
+            .attr("cx", function(d){return x(d.suicide_num);})
+            .attr("cy", function(d){return y(d.gdp_capita);})
             
         svg2.append("text").attr("x", (width/2 - 25)).attr("y", 0 - (margin.top/2)).attr("text-anchor", "middle").style("font-size", "16px").style("text-decoration", "underline").text("Number of Suicides vs GDP per Capita from 1985-2016");
 
@@ -75,7 +75,7 @@ var scatter = function(filepath){
         var y = d3.scaleLinear().domain([0, 65000]).range([height, 0]);
         
         svg3.append("g").call(d3.axisLeft(y));
-        svg3.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function (d) {return x(d.population);}).attr("cy", function (d) {return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
+        svg3.append('g').selectAll("dot").data(data).enter().append("circle").attr("cx", function(d){return x(d.population);}).attr("cy", function(d){return y(d.gdp_capita);}).attr("r", 2.0).style("fill", "rgb(104, 179, 163)");
         svg3.append("text").attr("class", "x_label").attr("text-anchor", "end").attr("x", width - 130).attr("y", height + 55).text("Population");
         svg3.append("text").attr("class", "y_label").attr("text-anchor", "end").attr("x", width - 450).attr("y", -70).attr("dy", ".75em").attr("transform", "rotate(-90)").text("GDP per capita");
         
@@ -87,8 +87,8 @@ var scatter = function(filepath){
             .call(d3.axisBottom(x));
 
         svg3.selectAll("circle").transition().delay(function(d,i){return(i*3)}).duration(1000)
-            .attr("cx", function (d) { return x(d.population); })
-            .attr("cy", function (d) { return y(d.gdp_capita); })
+            .attr("cx", function(d){ return x(d.population); })
+            .attr("cy", function(d){ return y(d.gdp_capita); })
             
         svg3.append("text").attr("x", (width/2 - 25)).attr("y", 0 - (margin.top/2)).attr("text-anchor", "middle").style("font-size", "16px").style("text-decoration", "underline").text("Population vs GDP per Capita from 1985-2016");
     })
@@ -136,11 +136,11 @@ var bar = function(filepath){
             .style("border-radius", "5px")
             .style("padding", "10px");
 
-        const mouseover1 = function(event, d) {
+        const mouseover1 = function(event, d){
             tooltip.style("opacity", 1)
         }
 
-        const mousemove1 = function(event, d) {
+        const mousemove1 = function(event, d){
             tooltip.html(`The number of suicides is : ${d.suicides_no}`)
                     .style("left", (event.x)/2 + "px") 
                     .style("top", (event.y)/2 + "px")
@@ -150,7 +150,7 @@ var bar = function(filepath){
                     //.style("top", d3.select(this).attr("cy") + "px")
         }
 
-        const mouseleave1 = function(event,d) {
+        const mouseleave1 = function(event,d){
             tooltip.transition().duration(200).style("opacity", 0)
         }
 
@@ -198,7 +198,7 @@ var stacked1 = function(filepath){
         var filler_col = ["rgb(104, 179, 163)", "rgb(135, 175, 230)", "rgb(230, 130, 130)"];
         var groups = q4.selectAll(".gbars").data(series).enter().append("g").attr("class", "gbars").attr("fill", function(i, j){return filler_col[j];})
         var rects = groups.selectAll("rect").data(function(i){return i;}).enter().append("rect").attr("x", function(i, j){return x_scale(j);})
-                                                                                                .attr("y", function (d){return y_scale(d[1]);})
+                                                                                                .attr("y", function(d){return y_scale(d[1]);})
                                                                                                 .attr("width", function(i){return x_scale.bandwidth();})
                                                                                                 .attr("height", function(i){return y_scale(i[0])-y_scale(i[1]);})
 
@@ -244,7 +244,7 @@ var stacked2 = function(filepath){
         var filler_col = ["rgb(250, 180, 90)", "rgb(135, 175, 230)", "rgb(230, 130, 130)", "rgb(250, 215, 115)", "rgb(200, 115, 250)", "rgb(104, 179, 163)"];
         var groups = q4.selectAll(".gbars").data(series).enter().append("g").attr("class", "gbars").attr("fill", function(i, j){return filler_col[j];})
         var rects = groups.selectAll("rect").data(function(i){return i;}).enter().append("rect").attr("x", function(i, j){return x_scale(j);})
-                                                                                                .attr("y", function (d){return y_scale(d[1]);})
+                                                                                                .attr("y", function(d){return y_scale(d[1]);})
                                                                                                 .attr("width", function(i){return x_scale.bandwidth();})
                                                                                                 .attr("height", function(i){return y_scale(i[0])-y_scale(i[1]);})
 
@@ -267,59 +267,52 @@ var stacked2 = function(filepath){
 
 var stream = function(filepath){
     var csv = d3.csv(filepath, function(i){return {"": parseInt(i[""]), country: i.country, year: parseInt(i.year), sex: i.sex, age: i.age, suicide_num: parseInt(i.suicides_no), population: i.population, suicides_100k: parseInt(i.suicides_100k), gdp_yearly: i.gdp_yearly, gdp_capita: i.gdp_capita, gen: i.generation}});
-    csv.then(function (data) {
+    csv.then(function(data){
 
-        data = data.filter(function (d) {return d.year <=2013;})
+        data = data.filter(function(d){return d.year <= 2013;})
 
-        var canada = data.filter(function (d) { return d.country === "Canada";})
+        var canada = data.filter(function(d){ return d.country === "Canada";})
         canada = d3.rollups(canada, v => d3.sum(v, d => d.suicide_num), d => d.year)
             .map(([k, v]) => ({ year: k, Canada: v}))
 
-        var mexico = data.filter(function (d) { return d.country === "Mexico";})
+        var mexico = data.filter(function(d){ return d.country === "Mexico";})
 
         mexico = d3.rollups(mexico, v => d3.sum(v, d => d.suicide_num), d => d.year)
             .map(([k, v]) => ({ year: k, Mexico: v}))
 
-        var US = data.filter(function (d) { return d.country === "United States";})
+        var US = data.filter(function(d){ return d.country === "United States";})
 
         US = d3.rollups(US, v => d3.sum(v, d => d.suicide_num), d => d.year)
             .map(([k, v]) => ({ year: k, United_States: v}))
 
         data = US;
-        for (var i = 0; i < US.length; i++) {
+        for (var i = 0; i < US.length; i++){
             data[i]['Canada'] = canada[i]['Canada']
             data[i]['Mexico'] = mexico[i]['Mexico']
         }
-        var group_data=d3.group(data, d=>d.year);
-        //console.log(group_data)
-        var types=["United_States","Canada","Mexico"];
-        var years= Array.from(group_data.keys()).sort();
+        var group_data = d3.group(data, d=>d.year);
+        var types =["United_States","Canada","Mexico"];
+        var years = Array.from(group_data.keys()).sort();
 
-        var width=1000;
-        var height=800;
-        var margin=50;
+        var width = 1000;
+        var height = 800;
+        var margin = 50;
 
-        data.forEach(d=>{
-            d.year=d3.timeParse("%Y")(d.year);
-        })
+        data.forEach(d=>{d.year= d3.timeParse("%Y")(d.year);})
 
-        const svg=d3.select("#stream").append("svg").attr("width",width).attr("height",height);
-        var x=d3.scaleTime().domain(d3.extent(data,d=>d.year)).range([margin,width-margin]);
-        const y=d3.scaleLinear().domain([0,d3.max(data,function(d){return d.Canada+d.United_States+d.Mexico})+20]).range([height-margin,margin]);
-        const x_axis=d3.axisBottom(x).ticks(years.length)
-        const y_axis=d3.axisLeft(y)
+        const svg = d3.select("#stream").append("svg").attr("width",width).attr("height",height);
+        var x = d3.scaleTime().domain(d3.extent(data,d=>d.year)).range([margin,width-margin]);
+        const y = d3.scaleLinear().domain([0,d3.max(data,function(d){return d.Canada+d.United_States+d.Mexico})+20]).range([height-margin,margin]);
+        const x_axis = d3.axisBottom(x).ticks(years.length)
+        const y_axis = d3.axisLeft(y)
         svg.append('g').attr('transform',`translate(${margin},0)`).call(y_axis).append("text").attr('text-anchor',"end");
         svg.append('g').attr('transform',`translate(0,${height-margin})`).call(x_axis).selectAll("text").attr("text-anchor","end").attr("transform","rotate(-45)");
 
-        var color=d3.scaleOrdinal().domain(types).range([d3.rgb(104, 179, 163),d3.rgb(135, 175, 230),d3.rgb(230, 130, 130)]);
-        var stack=d3.stack().keys(types)(data);
-        console.log(stack)
+        var color = d3.scaleOrdinal().domain(types).range([d3.rgb(104, 179, 163),d3.rgb(135, 175, 230),d3.rgb(230, 130, 130)]);
+        var stack = d3.stack().keys(types)(data);
+        //console.log(stack)
 
-        svg.selectAll('mylayers').data(stack).enter().append('path').style('fill',d=> color(d.key))
-            .attr("d",d3.area()
-                .x(d=>x(d.data.year))
-                .y0(d=>y(d[0]))
-                .y1(d=>y(d[1])))
+        svg.selectAll('mylayers').data(stack).enter().append('path').style('fill', d=> color(d.key)).attr("d",d3.area().x(d=>x(d.data.year)).y0(d=>y(d[0])).y1(d=>y(d[1])))
     })
 }
 
@@ -332,149 +325,119 @@ var boxplot = function(filepath){
         var margin = {top: 10, right: 30, bottom: 75, left: 80}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
         var svg1 = d3.select("#boxplot").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        const allGroup = ["United States", "Canada", "Mexico"];
+        const allGroup = ["Canada", "Mexico", "United States"];
 
         d3.select("#selectButton")
             .selectAll('myOptions')
             .data(allGroup)
             .enter()
             .append('option')
-            .text(function (d) { return d; }) // text showed in the menu
-            .attr("value", function (d) { return d; })
+            .text(function(d){return d;})
+            .attr("value", function(d){ return d; })
 
-        var US = data.filter(function(d) {return d.country === "United States"});
+        var US = data.filter(function(d){return d.country === "United States"});
 
-        var sumstat = d3.rollup(US, function(d) {
-            
-
-            q1 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.25)
-            var median = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.5)
-            q3 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.75)
+        var sumstat = d3.rollup(US, function(d){
+            q1 = d3.quantile(d.map(function(g){ return g.suicides_100k;}).sort(d3.ascending),.25)
+            var median = d3.quantile(d.map(function(g){ return g.suicides_100k;}).sort(d3.ascending),.5)
+            q3 = d3.quantile(d.map(function(g){ return g.suicides_100k;}).sort(d3.ascending),.75)
             interQuantileRange = q3 - q1
             var min = q1 - 1.5 * interQuantileRange
             var max = q3 + 1.5 * interQuantileRange
             return({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: min, max: max})
-        
         })
 
-        var y = d3.scaleLinear()
-            .domain([sumstat.min,sumstat.max])
-            .range([height, 0]);
+        var y = d3.scaleLinear().domain([sumstat.min,sumstat.max]).range([height, 0]);
         svg1.call(d3.axisLeft(y))
 
-        var myColor = d3.scaleOrdinal()
+        /*var myColor = d3.scaleOrdinal()
             .domain(allGroup)
-            .range(d3.schemeSet2);
+            .range(d3.schemeSet2);*/
+        
+        var myColor = ["rgb(104, 179, 163)", "rgb(135, 175, 230)", "rgb(230, 130, 130)"];
+        var center = 200, width = 100;
 
-        var center = 200
-        var width = 100
-
-// Show the main vertical line
-        const line = svg1
-            .append("line")
+        const line = svg1.append("line")
             .attr("x1", center)
             .attr("x2", center)
             .attr("y1", y(sumstat.min) )
             .attr("y2", y(sumstat.max) )
             .attr("stroke", "black")
 
-// Show the box
-        const box = svg1
-            .append("rect")
+        const box = svg1.append("rect")
             .attr("x", center - width/2)
             .attr("y", y(sumstat.q3) )
             .attr("height", (y(sumstat.q1)-y(sumstat.q3)) )
             .attr("width", width )
             .attr("stroke", "black")
-            .style("fill", "#69b3a2")
+            .style("fill", "rgb(104, 179, 163)")
 
-// show median, min and max horizontal lines
-        const min = svg1
-            .append("line")
+        const min = svg1.append("line")
             .attr("x1", center-width/2)
             .attr("x2", center+width/2)
             .attr("y1", y(sumstat.min) )
             .attr("y2", y(sumstat.min) )
             .attr("stroke", "black")
 
-        const median = svg1
-            .append("line")
+        const median = svg1.append("line")
             .attr("x1", center-width/2)
             .attr("x2", center+width/2)
             .attr("y1", y(sumstat.median) )
             .attr("y2", y(sumstat.median) )
             .attr("stroke", "black")
 
-        const max = svg1
-            .append("line")
+        const max = svg1.append("line")
             .attr("x1", center-width/2)
             .attr("x2", center+width/2)
             .attr("y1", y(sumstat.max) )
             .attr("y2", y(sumstat.max) )
             .attr("stroke", "black")
 
-        function update(selectedGroup) {
-
-            // Create new data with the selection?
-            const dataFilter = data.filter(function (d) {return d.country === selectedGroup;})
-
-            var sumstat = d3.rollup(dataFilter, function(d) {
-
-
-                q1 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.25)
-                var median = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.5)
-                q3 = d3.quantile(d.map(function(g) { return g.suicides_100k;}).sort(d3.ascending),.75)
+        function update(selectedGroup){
+            const dataFilter = data.filter(function(d){return d.country === selectedGroup;})
+            var sumstat = d3.rollup(dataFilter, function(d){
+                q1 = d3.quantile(d.map(function(g){ return g.suicides_100k;}).sort(d3.ascending),.25)
+                var median = d3.quantile(d.map(function(g){ return g.suicides_100k;}).sort(d3.ascending),.5)
+                q3 = d3.quantile(d.map(function(g){ return g.suicides_100k;}).sort(d3.ascending),.75)
                 interQuantileRange = q3 - q1
                 var min = q1 - 1.5 * interQuantileRange
                 var max = q3 + 1.5 * interQuantileRange
                 return({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: min, max: max})
-
             })
 
-            console.log(sumstat);
-            // Give these new data to update line
-            line
-                .transition()
-                .duration(1000)
-                .attr("y1", y(sumstat.min)
-                )
+            //console.log(sumstat);
+            line.transition().duration(1000)
+                .attr("y1", y(sumstat.min))
                 .attr("y2", y(sumstat.max))
 
-
-            box
-                .transition()
-                .duration(1000)
+            box.transition().duration(1000)
                 .attr("y", y(sumstat.q3))
                 .attr("height", (y(sumstat.q1)-y(sumstat.q3)))
-                .style("fill", function(d){ return myColor(selectedGroup) })
+                .style("fill", function(d){ 
+                    if(selectedGroup == "United States") 
+                        return myColor[2]; 
+                    else if (selectedGroup == "Canada") 
+                        return myColor[0]; 
+                    else 
+                        return myColor[1]})
 
-
-            min
-                .transition()
-                .duration(1000)
+                //.style("fill", function(d){ return myColor(selectedGroup) })
+                
+            min.transition().duration(1000)
                 .attr("y1", y(sumstat.min))
                 .attr("y2", y(sumstat.min))
 
-            median
-                .transition()
-                .duration(1000)
+            median.transition().duration(1000)
                 .attr("y1", y(sumstat.median))
                 .attr("y2", y(sumstat.median))
 
-            max
-                .transition()
-                .duration(1000)
+            max.transition().duration(1000)
                 .attr("y1", y(sumstat.max))
                 .attr("y2", y(sumstat.max))
-
-
         }
 
-        // When the button is changed, run the updateChart function
-        d3.select("#selectButton").on("change", function(event,d) {
-            // recover the option that has been chosen
+        d3.select("#selectButton").on("change", function(event, d){
             const selectedOption = d3.select(this).property("value")
-            // run the updateChart function with this selected option
             update(selectedOption)
         })
     });
