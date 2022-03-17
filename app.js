@@ -312,16 +312,16 @@ var stream = function(filepath){
         svg.append('g').attr('transform',`translate(${margin},0)`).call(y_axis).append("text").attr('text-anchor',"end");
         svg.append('g').attr('transform',`translate(0,${height-margin})`).call(x_axis).selectAll("text").attr("text-anchor","end").attr("transform","rotate(-45)");
 
-        var color = d3.scaleOrdinal().domain(types).range([d3.rgb(104, 179, 163),d3.rgb(135, 175, 230),d3.rgb(230, 130, 130)]);
+        var color = d3.scaleOrdinal().domain(types).range([d3.rgb(230, 130, 130), d3.rgb(104, 179, 163),d3.rgb(135, 175, 230)]);
         var stack = d3.stack().keys(types)(data);
         //console.log(stack)
 
-        svg.append("circle").attr("cx", 120).attr("cy", 210).attr("r", 6).style("fill", "rgb(104, 179, 163)")
-        svg.append("circle").attr("cx", 120).attr("cy", 190).attr("r", 6).style("fill", "rgb(135, 175, 230)")
-        svg.append("circle").attr("cx", 120).attr("cy", 170).attr("r", 6).style("fill", "rgb(230, 130, 130)")
-        svg.append("text").attr("x", 140).attr("y", 210).text("United States").style("font-size", "15px").attr("alignment-baseline", "middle")
-        svg.append("text").attr("x", 140).attr("y", 190).text("Canada").style("font-size", "15px").attr("alignment-baseline", "middle")
-        svg.append("text").attr("x", 140).attr("y", 170).text("Mexico").style("font-size", "15px").attr("alignment-baseline", "middle")
+        svg.append("circle").attr("cx", 120).attr("cy", 90).attr("r", 6).style("fill", "rgb(135, 175, 230)")
+        svg.append("circle").attr("cx", 120).attr("cy", 110).attr("r", 6).style("fill", "rgb(104, 179, 163)")
+        svg.append("circle").attr("cx", 120).attr("cy", 130).attr("r", 6).style("fill", "rgb(230, 130, 130)")
+        svg.append("text").attr("x", 140).attr("y", 90).text("Mexico").style("font-size", "15px").attr("alignment-baseline", "middle")
+        svg.append("text").attr("x", 140).attr("y", 110).text("Canada").style("font-size", "15px").attr("alignment-baseline", "middle")
+        svg.append("text").attr("x", 140).attr("y", 130).text("United States").style("font-size", "15px").attr("alignment-baseline", "middle")
         svg.selectAll('mylayers').data(stack).enter().append('path').style('fill', d=> color(d.key)).attr("d",d3.area().x(d=>x(d.data.year)).y0(d=>y(d[0])).y1(d=>y(d[1])))
     })
 }
@@ -332,20 +332,12 @@ var boxplot = function(filepath){
     });
     
     data.then(function(data){
-        var margin = {top: 10, right: 30, bottom: 75, left: 80}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
-
+        var margin = {top: 10, right: 30, bottom: 30, left: 40}, width = 400 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
         var svg1 = d3.select("#boxplot").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         const allGroup = ["United States", "Canada", "Mexico"];
 
-        d3.select("#selectButton")
-            .selectAll('myOptions')
-            .data(allGroup)
-            .enter()
-            .append('option')
-            .text(function(d){return d;})
-            .attr("value", function(d){ return d; })
-
+        d3.select("#selectButton").selectAll('myOptions').data(allGroup).enter().append('option').text(function(d){return d;}).attr("value", function(d){ return d; })
         var US = data.filter(function(d){return d.country === "United States"});
 
         var sumstat = d3.rollup(US, function(d){
@@ -358,7 +350,7 @@ var boxplot = function(filepath){
             return({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: min, max: max})
         })
 
-        var y = d3.scaleLinear().domain([sumstat.min,sumstat.max]).range([height, 0]);
+        var y = d3.scaleLinear().domain([sumstat.min, sumstat.max]).range([height, 0]);
         svg1.call(d3.axisLeft(y))
         
         var myColor = ["rgb(104, 179, 163)", "rgb(135, 175, 230)", "rgb(230, 130, 130)"];
@@ -375,7 +367,7 @@ var boxplot = function(filepath){
             .attr("x", center - width/2)
             .attr("y", y(sumstat.q3) )
             .attr("height", (y(sumstat.q1)-y(sumstat.q3)) )
-            .attr("width", width )
+            .attr("width", width)
             .attr("stroke", "black")
             .style("fill", "rgb(104, 179, 163)")
 
