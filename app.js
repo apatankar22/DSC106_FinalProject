@@ -316,6 +316,12 @@ var stream = function(filepath){
         var stack = d3.stack().keys(types)(data);
         //console.log(stack)
 
+        svg.append("circle").attr("cx", 120).attr("cy", 210).attr("r", 6).style("fill", "rgb(104, 179, 163)")
+        svg.append("circle").attr("cx", 120).attr("cy", 190).attr("r", 6).style("fill", "rgb(135, 175, 230)")
+        svg.append("circle").attr("cx", 120).attr("cy", 170).attr("r", 6).style("fill", "rgb(230, 130, 130)")
+        svg.append("text").attr("x", 140).attr("y", 210).text("United States").style("font-size", "15px").attr("alignment-baseline", "middle")
+        svg.append("text").attr("x", 140).attr("y", 190).text("Canada").style("font-size", "15px").attr("alignment-baseline", "middle")
+        svg.append("text").attr("x", 140).attr("y", 170).text("Mexico").style("font-size", "15px").attr("alignment-baseline", "middle")
         svg.selectAll('mylayers').data(stack).enter().append('path').style('fill', d=> color(d.key)).attr("d",d3.area().x(d=>x(d.data.year)).y0(d=>y(d[0])).y1(d=>y(d[1])))
     })
 }
@@ -327,9 +333,10 @@ var boxplot = function(filepath){
     
     data.then(function(data){
         var margin = {top: 10, right: 30, bottom: 75, left: 80}, width = 460 - margin.left - margin.right, height = 400 - margin.top - margin.bottom;
+
         var svg1 = d3.select("#boxplot").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        const allGroup = ["Canada", "Mexico", "United States"];
+        const allGroup = ["United States", "Canada", "Mexico"];
 
         d3.select("#selectButton")
             .selectAll('myOptions')
@@ -353,10 +360,6 @@ var boxplot = function(filepath){
 
         var y = d3.scaleLinear().domain([sumstat.min,sumstat.max]).range([height, 0]);
         svg1.call(d3.axisLeft(y))
-
-        /*var myColor = d3.scaleOrdinal()
-            .domain(allGroup)
-            .range(d3.schemeSet2);*/
         
         var myColor = ["rgb(104, 179, 163)", "rgb(135, 175, 230)", "rgb(230, 130, 130)"];
         var center = 200, width = 100;
@@ -418,9 +421,9 @@ var boxplot = function(filepath){
                 .attr("y", y(sumstat.q3))
                 .attr("height", (y(sumstat.q1)-y(sumstat.q3)))
                 .style("fill", function(d){ 
-                    if(selectedGroup == "United States") 
+                    if(selectedGroup === "Canada")
                         return myColor[2]; 
-                    else if (selectedGroup == "Canada") 
+                    else if (selectedGroup === "United States")
                         return myColor[0]; 
                     else 
                         return myColor[1]})
